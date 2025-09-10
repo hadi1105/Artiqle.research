@@ -82,7 +82,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
         <button
           type="button"
           onClick={() => setQuery("")}
-          className="absolute inset-y--0.000005 right-0 pr-20 flex items-center text-gray-400 hover:text-gray-600"
+          className="absolute inset-y-0.25 right-0 pr-20 flex items-center text-gray-400 hover:text-gray-600"
           aria-label="Clear search"
         >
           <X className="h-5 w-5" />
