@@ -78,15 +78,52 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
           className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
         />
         <button
-          onClick={() => setShowFilters(!showFilters)}
-          className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
-            hasActiveFilters ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
-          }`}
-        >
-          <span className="font-sans font-medium text-sm tracking-wide">Filter</span>
-          <Filter className="h-5 w-5" />
-        </button>
-      </div>
+  onClick={() => setShowFilters(!showFilters)}
+  className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
+    hasActiveFilters ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
+  }`}
+>
+  <AnimatePresence mode="wait">
+    {!showFilters ? (
+      <motion.span
+        key="filter-text"
+        initial={{ opacity: 0, x: -6 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 6 }}
+        transition={{ duration: 0.2 }}
+        className="font-sans font-medium text-sm tracking-wide"
+      >
+        Filter
+      </motion.span>
+    ) : null}
+  </AnimatePresence>
+
+  {/* Icon changes between Filter and X */}
+  <AnimatePresence mode="wait">
+    {!showFilters ? (
+      <motion.div
+        key="filter-icon"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Filter className="h-5 w-5" />
+      </motion.div>
+    ) : (
+      <motion.div
+        key="close-icon"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.2 }}
+      >
+        <X className="h-5 w-5" />
+      </motion.div>
+    )}
+  </AnimatePresence>
+</button>
+
 
       {/* Filters Panel */}
       {showFilters && (
