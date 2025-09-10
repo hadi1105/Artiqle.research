@@ -94,7 +94,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
                   exit={{ opacity: 0, x: 10 }}
                   transition={{ duration: 0.2 }}
                   className="flex items-center space-x-1"
-            >
+              >
           <span>{showFilters ? 'Close' : 'Filter'}</span>
           <Filter className="h-5 w-5" />
         </button>
