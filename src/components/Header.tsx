@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({ bookmarkCount, onShowBookmarks }
           <div className="flex items-center">
             <BookOpen className="h-8 w-8 text-blue-600 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Research Assistant</h1>
+              <h1 className="text-xl font-bold text-gray-900">Artiqle</h1>
               <p className="text-xs text-gray-500">Semantic paper discovery</p>
             </div>
           </div>
