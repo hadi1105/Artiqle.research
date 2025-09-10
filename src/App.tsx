@@ -28,8 +28,8 @@ function App() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Artiqle
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> AI</span>
+            Your Personal
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> Research Assistant</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Search across Semantic Scholar, arXiv, CrossRef, PubMed, OpenAlex, and CORE simultaneously. 
