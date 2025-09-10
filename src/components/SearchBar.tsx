@@ -78,13 +78,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
           className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
         />
         <button
-          <h1 className="text-xl font-bold text-gray-900">Filters</h1>
           onClick={() => setShowFilters(!showFilters)}
           className={`absolute inset-y-0 right-0 pr-3 flex items-center transition-colors ${
             hasActiveFilters ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
           <Filter className="h-5 w-5" />
+           <span>{showFilters ? 'Close' : 'Filter'}</span>
         </button>
       </div>
 
