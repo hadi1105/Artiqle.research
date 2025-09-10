@@ -72,6 +72,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className={`h-5 w-5 transition-colors ${loading ? 'text-blue-500 animate-pulse' : 'text-gray-400'}`} />
         </div>
+        
           {/* Search Input with Clear X */}
           <div className="relative flex-1">
             <input
@@ -80,7 +81,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search for research papers..."
               className="block w-full pl-4 pr-10 py-3 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-            />
+            
         
             {/* Clear Input Button */}
             {query && (
@@ -102,6 +103,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
             className={`flex items-center space-x-1 px-4 py-2 rounded-xl border transition-colors ${
               hasActiveFilters ? "border-blue-600 text-blue-600" : "border-gray-300 text-gray-500 hover:text-gray-700"
             }`}
+          >
             <span className="font-sans font-medium text-sm tracking-wide">Filter</span>
             <Filter className="h-5 w-5" /> {/* your Filter icon */}
           </button>
