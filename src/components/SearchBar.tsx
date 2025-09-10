@@ -113,7 +113,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
         </button>
       </div>
     )}
-        </div>
+  </div>
       
 
       {/* Filters Panel */}
