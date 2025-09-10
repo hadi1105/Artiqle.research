@@ -80,6 +80,16 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
           className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
         />
         <button
+          type="button"
+          onClick={() => setQuery("")}
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+          aria-label="Clear search"
+        >
+          <X className="h-5 w-5" />          
+        </button>
+      )}
+    </div>
+        <button
             onClick={() => setShowFilters(!showFilters)}
             className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
               hasActiveFilters ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
