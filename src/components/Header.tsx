@@ -16,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({ bookmarkCount, onShowBookmarks }
             <BookOpen className="h-8 w-8 text-blue-600 mr-3" />
             <div>
               <h1 className="text-xl font-bold text-gray-900">Artiqle</h1>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">AI</span>
               <p className="text-xs text-gray-500">Semantic paper discovery</p>
             </div>
           </div>
