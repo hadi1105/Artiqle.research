@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, X } from 'lucide-react';
 import { SearchFilters } from '../types/paper';
+import { motion, AnimatePresence } from "framer-motion";
+import { Filter, X } from "lucide-react";
 
 interface SearchBarProps {
   onSearch: (query: string, filters: SearchFilters) => void;
