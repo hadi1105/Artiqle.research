@@ -112,6 +112,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
           <Filter className="h-5 w-5" /> {/* your own Filter icon */}
         </button>
       </div>
+    )}
+        </div>
       
 
       {/* Filters Panel */}
