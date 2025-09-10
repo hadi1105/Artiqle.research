@@ -87,10 +87,57 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
         >
           <X className="h-5 w-5" />          
         </button>
-    
-         
-
       </div>
+        <div>
+          <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
+                hasActiveFilters ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
+              }`}
+            >
+              {/* Animate Filter text */}
+              <AnimatePresence mode="wait">
+                {!showFilters && (
+                  <motion.span
+                    key="filter-text"
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 6 }}
+                    transition={{ duration: 0.2 }}
+                    className="font-sans font-medium text-sm tracking-wide"
+                  >
+                    Filter
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            
+              {/* Animate between your Filter and the X icon */}
+              <AnimatePresence mode="wait">
+                {!showFilters ? (
+                  <motion.div
+                    key="filter-icon"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Filter className="h-5 w-5" /> {/* ← your own Filter */}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="close-icon"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-5 w-5" /> {/* ← from lucide-react */}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </div>
+      
 
       {/* Filters Panel */}
       {showFilters && (
