@@ -44,7 +44,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onSearch(query, filters);
-    }, 300);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [query, filters, onSearch]);
