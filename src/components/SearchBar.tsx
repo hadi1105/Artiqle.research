@@ -71,72 +71,47 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <Search className={`h-5 w-5 transition-colors ${loading ? 'text-blue-500 animate-pulse' : 'text-gray-400'}`} />
+        <div className="w-full max-w-4xl mx-auto flex items-center space-x-2">
+  {/* Search Input */}
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search for research papers..."
+            className="block w-full pl-10 pr-10 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+          />
+      
+          {/* Left Search Icon */}
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className={`h-5 w-5 ${loading ? "text-blue-500 animate-pulse" : "text-gray-400"}`} />
+          </div>
+      
+          {/* Clear Input Button */}
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+              aria-label="Clear search"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for research papers..."
-          className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-        />
+      
+        {/* Filter Button */}
         <button
           type="button"
-          onClick={() => setQuery("")}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-          aria-label="Clear search"
+          onClick={() => setShowFilters(!showFilters)}
+          className={`flex items-center space-x-1 px-4 py-2 rounded-xl border transition-colors ${
+            hasActiveFilters ? "border-blue-600 text-blue-600" : "border-gray-300 text-gray-500 hover:text-gray-700"
+          }`}
         >
-          <X className="h-5 w-5" />          
+          <span className="font-sans font-medium text-sm tracking-wide">Filter</span>
+          <Filter className="h-5 w-5" /> {/* your own Filter icon */}
         </button>
       </div>
-        <div>
-          <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
-                hasActiveFilters ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              {/* Animate Filter text */}
-              <AnimatePresence mode="wait">
-                {!showFilters && (
-                  <motion.span
-                    key="filter-text"
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 6 }}
-                    transition={{ duration: 0.2 }}
-                    className="font-sans font-medium text-sm tracking-wide"
-                  >
-                    Filter
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            
-              {/* Animate between your Filter and the X icon */}
-              <AnimatePresence mode="wait">
-                {!showFilters ? (
-                  <motion.div
-                    key="filter-icon"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Filter className="h-5 w-5" /> {/* ← your own Filter */}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="close-icon"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="h-5 w-5" /> {/* ← from lucide-react */}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </button>
-          </div>
       
 
       {/* Filters Panel */}
