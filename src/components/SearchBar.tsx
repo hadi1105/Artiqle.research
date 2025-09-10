@@ -95,7 +95,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
                 hasActiveFilters ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
               }`}
           
-        </div>
+          </div>
       
 
       {/* Filters Panel */}
