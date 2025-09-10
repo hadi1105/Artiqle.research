@@ -83,6 +83,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
             hasActiveFilters ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
           }`}
         >
+          <span>Filter</span>
           <Filter className="h-5 w-5" />
         </button>
       </div>
