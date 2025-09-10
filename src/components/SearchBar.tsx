@@ -87,8 +87,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
         >
           <X className="h-5 w-5" />          
         </button>
-      )}
-    </div>
+    
         <button
             onClick={() => setShowFilters(!showFilters)}
             className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
