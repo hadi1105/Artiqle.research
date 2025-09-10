@@ -67,51 +67,60 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      {/* Search Input */}
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Search className={`h-5 w-5 transition-colors ${loading ? 'text-blue-500 animate-pulse' : 'text-gray-400'}`} />
-        </div>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for research papers..."
-          className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
-        />
-        <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
-              hasActiveFilters ? 'text-blue-600' : 'text-gray-400 hover:text-gray-600'
-            }`}
+  {/* Search Input */}
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <Search
+        className={`h-5 w-5 transition-colors ${
+          loading ? "text-blue-500 animate-pulse" : "text-gray-400"
+        }`}
+      />
+    </div>
+
+    <input
+      type="text"
+      value={query}
+      onChange={(e) => setQuery(e.target.value)}
+      placeholder="Search for research papers..."
+      className="block w-full pl-10 pr-12 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+    />
+
+    <button
+      onClick={() => setShowFilters(!showFilters)}
+      className={`absolute inset-y-0 right-0 pr-3 flex items-center space-x-1 transition-colors ${
+        hasActiveFilters ? "text-blue-600" : "text-gray-400 hover:text-gray-600"
+      }`}
+    >
+      <AnimatePresence mode="wait">
+        {!showFilters ? (
+          <motion.div
+            key="filter"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 10 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center space-x-1"
           >
-           <AnimatePresence mode="wait">
-              {!showFilters ? (
-                <motion.div
-                  key="filter"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="flex items-center space-x-1"
-              >
-                <span>Filter</span>
+            <span>Filter</span>
             <Filter className="h-5 w-5" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="close"
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <X className="h-5 w-5" />
-               </motion.div>
-            )}
-           </AnimatePresence>
-        </button>
-      </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="close"
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center"
+          >
+            <X className="h-5 w-5" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+      </button>
+    </div>
+
+
 
       {/* Filters Panel */}
       {showFilters && (
