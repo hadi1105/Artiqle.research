@@ -28,7 +28,7 @@ function App() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Multi-Source Research Discovery with
+            Artiqle
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600"> AI</span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
