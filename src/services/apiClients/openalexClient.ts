@@ -24,12 +24,12 @@ export class OpenAlexClient {
 
       const data = await response.json();
       
-      const papers: Paper[] = data.results?.map((work: any) => {
-        const authors = work.authorships?.map((authorship: any) => 
+      const papers: Paper[] = data.results?.map((work: { id?: string; title?: string; authorships?: Array<{ author?: { display_name?: string } }>; concepts?: Array<{ display_name: string }>; abstract?: string; publication_year?: number; primary_location?: { source?: { display_name?: string }; landing_page_url?: string }; cited_by_count?: number; open_access?: { oa_url?: string }; doi?: string }) => {
+        const authors = work.authorships?.map((authorship: { author?: { display_name?: string } }) => 
           authorship.author?.display_name
         ).filter(Boolean) || [];
         
-        const concepts = work.concepts?.map((concept: any) => concept.display_name) || [];
+        const concepts = work.concepts?.map((concept: { display_name: string }) => concept.display_name) || [];
         
         return {
           id: `openalex-${work.id?.split('/').pop()}`,

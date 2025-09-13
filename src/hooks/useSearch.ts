@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Paper, SearchFilters, SearchResult } from '../types/paper';
+import { useState, useCallback } from 'react';
+import { SearchFilters, SearchResult } from '../types/paper';
 import { SearchService } from '../services/searchService';
 
 export const useSearch = () => {

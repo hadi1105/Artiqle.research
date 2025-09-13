@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, X, ChevronLeft } from 'lucide-react';
 import { SearchFilters } from '../types/paper';
 
 interface SearchBarProps {
@@ -51,7 +51,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
     }
   };
 
-  const handleFilterChange = (key: keyof SearchFilters, value: any) => {
+  const handleFilterChange = (key: keyof SearchFilters, value: string[] | number | undefined) => {
     setFilters(prev => ({
       ...prev,
       [key]: value
