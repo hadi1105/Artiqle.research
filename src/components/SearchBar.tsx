@@ -203,44 +203,58 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
         {/* Search Input */}
         <div className="flex-1">
-          <div className="relative">
+          <div className="relative group">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Search for research papers... (Press Enter to search)"
-              className="block w-full pl-4 pr-32 py-4 border border-gray-300 rounded-xl text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md"
+              placeholder="Search for research papers..."
+              className="block w-full pl-6 pr-16 py-4 border-2 border-gray-200 rounded-2xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md hover:border-gray-300 bg-white"
               disabled={loading}
             />
             
-            {/* Clear Button */}
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="absolute inset-y-0 right-24 flex items-center text-gray-400 hover:text-gray-600"
-                aria-label="Clear search"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            )}
-
-            {/* Search Button */}
+            {/* Bolt-style Arrow Search Button */}
             <button
               onClick={handleSearch}
               disabled={loading || !query.trim()}
-              className="absolute inset-y-0 right-2 flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-105"
+              style={{
+                clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%)'
+              }}
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
               ) : (
-                <>
-                  <Search className="h-5 w-5 mr-2" />
-                  Search
-                </>
+                <div className="flex items-center justify-center w-full h-full pl-1">
+                  <svg 
+                    className="h-6 w-6" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2.5} 
+                      d="M9 5l7 7-7 7" 
+                    />
+                  </svg>
+                </div>
               )}
             </button>
+
+            {/* Clear Button */}
+            {query && !loading && (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                className="absolute right-16 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
 
           {/* Active Filters Display */}
