@@ -42,7 +42,12 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
   // Debounced search
   useEffect(() => {
+    if (!query.trim()) {
+      return;
+    }
+    
     const timer = setTimeout(() => {
+      console.log('Searching for:', query, 'with filters:', filters);
       onSearch(query, filters);
     }, 300);
 

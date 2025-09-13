@@ -49,12 +49,15 @@ export class SearchService {
       // Execute all searches in parallel
       const results = await Promise.allSettled(promises);
       
+      console.log('Search results from all APIs:', results);
+      
       // Combine results from all sources
       let allPapers: Paper[] = [];
       let totalCount = 0;
 
       results.forEach(result => {
         if (result.status === 'fulfilled') {
+          console.log(`API returned ${result.value.papers.length} papers`);
           allPapers = [...allPapers, ...result.value.papers];
           totalCount += result.value.total;
         } else {
@@ -62,12 +65,18 @@ export class SearchService {
         }
       });
 
+      console.log(`Total papers before deduplication: ${allPapers.length}`);
+      
       // Remove duplicates based on title similarity and DOI
       const uniquePapers = this.removeDuplicates(allPapers);
 
+      console.log(`Total papers after deduplication: ${uniquePapers.length}`);
+      
       // Apply filters
       let filteredPapers = this.applyFilters(uniquePapers, filters);
 
+      console.log(`Total papers after filtering: ${filteredPapers.length}`);
+      
       // Sort by relevance (citation count and recency)
       filteredPapers = this.sortByRelevance(filteredPapers, query);
 
