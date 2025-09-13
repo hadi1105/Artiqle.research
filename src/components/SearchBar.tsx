@@ -69,16 +69,18 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-6 items-start">
         {/* Filters Panel */}
-        <div className={`transition-all duration-300 ${showFilters ? 'w-80' : 'w-16'} flex-shrink-0`}>
-          <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm h-fit">
+        <div className={`transition-all duration-500 ease-in-out ${showFilters ? 'w-80' : 'w-16'} flex-shrink-0`}>
+          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-lg h-fit">
             {/* Filter Toggle Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`w-full h-16 flex items-center justify-center transition-colors ${
-                hasActiveFilters ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-              } rounded-2xl`}
+              className={`w-full h-16 flex items-center justify-center transition-all duration-300 ${
+                hasActiveFilters 
+                  ? 'text-blue-600 bg-blue-50/80 border-blue-200' 
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50/80 border-transparent'
+              } rounded-3xl border-2`}
             >
               {showFilters ? (
                 <ChevronLeft className="h-6 w-6" />
@@ -89,13 +91,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
             {/* Filters Content */}
             {showFilters && (
-              <div className="p-4 border-t border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
+              <div className="p-6 border-t border-gray-100/50">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Filters</h3>
                   {hasActiveFilters && (
                     <button
                       onClick={clearFilters}
-                      className="flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                      className="flex items-center px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
                     >
                       <X className="h-4 w-4 mr-1" />
                       Clear
@@ -210,37 +212,20 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Search for research papers..."
-              className="block w-full h-16 pl-6 pr-16 border-2 border-gray-200 rounded-2xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md hover:border-gray-300 bg-white"
+              className="block w-full h-16 pl-8 pr-20 border-2 border-gray-200/50 rounded-3xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:border-gray-300 bg-white/80 backdrop-blur-sm"
               disabled={loading}
             />
             
-            {/* Bolt-style Arrow Search Button */}
+            {/* Search Button */}
             <button
               onClick={handleSearch}
               disabled={loading || !query.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-xl transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-105"
-              style={{
-                clipPath: 'polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%)'
-              }}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-105 hover:scale-105"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
               ) : (
-                <div className="flex items-center justify-center w-full h-full pl-1">
-                  <svg 
-                    className="h-6 w-6" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2.5} 
-                      d="M9 5l7 7-7 7" 
-                    />
-                  </svg>
-                </div>
+                <Search className="h-6 w-6" />
               )}
             </button>
 
@@ -249,7 +234,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute right-16 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="absolute right-18 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
