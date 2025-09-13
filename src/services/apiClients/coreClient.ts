@@ -32,8 +32,8 @@ export class CoreClient {
 
       const data = await response.json();
       
-      const papers: Paper[] = data.results?.map((work: any) => {
-        const authors = work.authors?.map((author: any) => author.name) || [];
+      const papers: Paper[] = data.results?.map((work: { id: string; title?: string; authors?: Array<{ name: string }>; abstract?: string; description?: string; yearPublished?: number; journals?: Array<{ title: string }>; publisher?: string; downloadUrl?: string; urls?: string[]; subjects?: string[]; doi?: string }) => {
+        const authors = work.authors?.map((author: { name: string }) => author.name) || [];
         
         return {
           id: `core-${work.id}`,

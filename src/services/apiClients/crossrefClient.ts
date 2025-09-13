@@ -25,8 +25,8 @@ export class CrossrefClient {
 
       const data = await response.json();
       
-      const papers: Paper[] = data.message?.items?.map((item: any) => {
-        const authors = item.author?.map((author: any) => 
+      const papers: Paper[] = data.message?.items?.map((item: { DOI: string; title?: string | string[]; author?: Array<{ given?: string; family?: string }>; published?: { 'date-parts'?: number[][] }; created?: { 'date-parts'?: number[][] }; abstract?: string | string[]; 'container-title'?: string[]; publisher?: string; 'is-referenced-by-count'?: number; URL?: string; subject?: string[] }) => {
+        const authors = item.author?.map((author: { given?: string; family?: string }) => 
           `${author.given || ''} ${author.family || ''}`.trim()
         ) || [];
         

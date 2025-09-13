@@ -36,9 +36,9 @@ export class SemanticScholarClient {
         return { papers: [], total: 0, hasMore: false };
       }
 
-      const papers: Paper[] = data.data.map((paper: any) => {
+      const papers: Paper[] = data.data.map((paper: { paperId: string; title?: string; authors?: Array<{ name?: string; displayName?: string } | string>; abstract?: string; year?: number; venue?: string; citationCount?: number; url?: string; openAccessPdf?: { url?: string }; fieldsOfStudy?: string[]; externalIds?: { DOI?: string }; doi?: string }) => {
         // Handle authors safely
-        const authors = paper.authors?.map((author: any) => {
+        const authors = paper.authors?.map((author: { name?: string; displayName?: string } | string) => {
           if (typeof author === 'string') return author;
           return author.name || author.displayName || 'Unknown Author';
         }).filter(Boolean) || [];

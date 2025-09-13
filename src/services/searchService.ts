@@ -53,13 +53,11 @@ export class SearchService {
       
       // Combine results from all sources
       let allPapers: Paper[] = [];
-      let totalCount = 0;
 
       results.forEach(result => {
         if (result.status === 'fulfilled') {
           console.log(`API returned ${result.value.papers.length} papers`);
           allPapers = [...allPapers, ...result.value.papers];
-          totalCount += result.value.total;
         } else {
           console.error('API search failed:', result.reason);
         }

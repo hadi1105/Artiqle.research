@@ -47,7 +47,7 @@ export class PubmedClient {
         const paper = results[pmid];
         if (!paper) return null;
         
-        const authors = paper.authors?.map((author: any) => author.name) || [];
+        const authors = paper.authors?.map((author: { name: string }) => author.name) || [];
         const year = paper.pubdate ? parseInt(paper.pubdate.split(' ')[0]) : 0;
         
         return {
