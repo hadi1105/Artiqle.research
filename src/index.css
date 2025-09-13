@@ -2,13 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations for modern minimalistic design */
+/* Custom animations for modern minimalistic design - Optimized for performance */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0px);
+    transform: translate3d(0, 0, 0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translate3d(0, -20px, 0);
   }
 }
 
@@ -27,40 +27,44 @@
 @keyframes fade-in-up {
   0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translate3d(0, 30px, 0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 @keyframes scale-in {
   0% {
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale3d(0.9, 0.9, 1);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: scale3d(1, 1, 1);
   }
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 8s ease infinite;
+  will-change: background-position;
 }
 
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out;
+  will-change: transform, opacity;
 }
 
 .animate-scale-in {
   animation: scale-in 0.4s ease-out;
+  will-change: transform, opacity;
 }
 
 /* Custom scrollbar for modern look */

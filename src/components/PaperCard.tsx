@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { ExternalLink, FileText, Bookmark, BookmarkCheck, Users, Calendar, Quote } from 'lucide-react';
 import { Paper } from '../types/paper';
 
@@ -8,13 +8,17 @@ interface PaperCardProps {
   onToggleBookmark: (paper: Paper) => void;
 }
 
-export const PaperCard: React.FC<PaperCardProps> = ({ paper, isBookmarked, onToggleBookmark }) => {
-  const formatCitationCount = (count: number) => {
+export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, onToggleBookmark }) => {
+  const formatCitationCount = useCallback((count: number) => {
     if (count >= 1000) {
       return `${(count / 1000).toFixed(1)}k`;
     }
     return count.toString();
-  };
+  }, []);
+
+  const handleToggleBookmark = useCallback(() => {
+    onToggleBookmark(paper);
+  }, [onToggleBookmark, paper]);
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-200/50 p-8 hover:shadow-2xl transition-all duration-500 hover:border-blue-200/50 group hover:scale-[1.02]">
@@ -51,7 +55,7 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, isBookmarked, onTog
         </div>
 
         <button
-          onClick={() => onToggleBookmark(paper)}
+          onClick={handleToggleBookmark}
           className={`ml-6 p-3 rounded-2xl transition-all duration-300 ${
             isBookmarked
               ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 shadow-lg'
@@ -127,4 +131,4 @@ export const PaperCard: React.FC<PaperCardProps> = ({ paper, isBookmarked, onTog
       </div>
     </div>
   );
-};
+});

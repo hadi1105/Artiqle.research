@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Filter, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useState, useCallback, useMemo, memo, useRef, useEffect } from 'react';
+import { Filter, X, ChevronLeft } from 'lucide-react';
 import { SearchFilters } from '../types/paper';
 
 interface SearchBarProps {
@@ -22,7 +22,7 @@ const RESEARCH_FIELDS = [
   'Chemistry',
   'Mathematics',
   'Statistics'
-];
+] as const;
 
 const RESEARCH_SOURCES = [
   { id: 'semantic-scholar', name: 'Semantic Scholar', description: 'AI-powered academic search' },
@@ -31,48 +31,122 @@ const RESEARCH_SOURCES = [
   { id: 'pubmed', name: 'PubMed', description: 'Biomedical literature' },
   { id: 'openalex', name: 'OpenAlex', description: 'Open academic database' },
   { id: 'core', name: 'CORE', description: 'Open access papers' }
-];
+] as const;
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
+const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
   const [query, setQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>({});
+  const searchTimeoutRef = useRef<number | null>(null);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     if (query.trim()) {
       console.log('Searching for:', query, 'with filters:', filters);
       onSearch(query, filters);
     }
-  };
+  }, [query, filters, onSearch]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  // Debounced search for better performance (currently unused but available for future use)
+  // const debouncedSearch = useCallback(() => {
+  //   if (searchTimeoutRef.current) {
+  //     clearTimeout(searchTimeoutRef.current);
+  //   }
+  //   searchTimeoutRef.current = setTimeout(() => {
+  //     handleSearch();
+  //   }, 300);
+  // }, [handleSearch]);
+
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
-  };
+  }, [handleSearch]);
 
-  const handleFilterChange = (key: keyof SearchFilters, value: any) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-  };
+  // Generic filter change handler (kept for potential future use)
+  // const handleFilterChange = useCallback((key: keyof SearchFilters, value: any) => {
+  //   setFilters(prev => {
+  //     // Only update if the value actually changed
+  //     if (prev[key] === value) return prev;
+  //     return {
+  //       ...prev,
+  //       [key]: value
+  //     };
+  //   });
+  // }, []);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setFilters({});
-  };
+  }, []);
 
-  const hasActiveFilters = Object.values(filters).some(value => 
-    value !== undefined && value !== null && 
-    (Array.isArray(value) ? value.length > 0 : true)
-  );
+  // Optimized handlers for specific filter types
+  const handleSourceChange = useCallback((sourceId: string, checked: boolean) => {
+    setFilters(prev => {
+      const currentSources = prev.sources || [];
+      const newSources = checked
+        ? [...currentSources, sourceId]
+        : currentSources.filter(s => s !== sourceId);
+      
+      // Only update if sources actually changed
+      if (JSON.stringify(currentSources.sort()) === JSON.stringify(newSources.sort())) {
+        return prev;
+      }
+      
+      return { ...prev, sources: newSources };
+    });
+  }, []);
+
+  const handleFieldChange = useCallback((field: string, checked: boolean) => {
+    setFilters(prev => {
+      const currentFields = prev.fields || [];
+      const newFields = checked
+        ? [...currentFields, field]
+        : currentFields.filter(f => f !== field);
+      
+      // Only update if fields actually changed
+      if (JSON.stringify(currentFields.sort()) === JSON.stringify(newFields.sort())) {
+        return prev;
+      }
+      
+      return { ...prev, fields: newFields };
+    });
+  }, []);
+
+  const handleYearFromChange = useCallback((value: string) => {
+    const yearFrom = value ? parseInt(value) : undefined;
+    setFilters(prev => prev.yearFrom === yearFrom ? prev : { ...prev, yearFrom });
+  }, []);
+
+  const handleYearToChange = useCallback((value: string) => {
+    const yearTo = value ? parseInt(value) : undefined;
+    setFilters(prev => prev.yearTo === yearTo ? prev : { ...prev, yearTo });
+  }, []);
+
+  const handleMinCitationsChange = useCallback((value: string) => {
+    const minCitations = value ? parseInt(value) : undefined;
+    setFilters(prev => prev.minCitations === minCitations ? prev : { ...prev, minCitations });
+  }, []);
+
+  const hasActiveFilters = useMemo(() => 
+    Object.values(filters).some(value => 
+      value !== undefined && value !== null && 
+      (Array.isArray(value) ? value.length > 0 : true)
+    ), [filters]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="w-full max-w-6xl mx-auto">
       <div className="flex gap-6 items-start">
         {/* Filters Panel */}
-        <div className={`transition-all duration-500 ease-in-out ${showFilters ? 'w-80' : 'w-16'} flex-shrink-0`}>
-          <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-3xl shadow-lg h-fit">
+        <div className={`transition-all duration-300 ease-out ${showFilters ? 'w-[800px]' : 'w-16'} flex-shrink-0`}>
+          <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-3xl shadow-xl h-fit max-h-96 overflow-y-auto">
             {/* Filter Toggle Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -89,41 +163,35 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               )}
             </button>
 
-            {/* Filters Content */}
-            {showFilters && (
-              <div className="p-6 border-t border-gray-100/50">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Filters</h3>
-                  {hasActiveFilters && (
-                    <button
-                      onClick={clearFilters}
-                      className="flex items-center px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Clear
-                    </button>
-                  )}
-                </div>
+                  {/* Filters Content */}
+                  {showFilters && (
+                    <div className="p-6 border-t border-gray-100/50">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold text-gray-900">Filters</h3>
+                        {hasActiveFilters && (
+                          <button
+                            onClick={clearFilters}
+                            className="flex items-center px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                          >
+                            <X className="h-4 w-4 mr-1" />
+                            Clear
+                          </button>
+                        )}
+                      </div>
 
-                <div className="space-y-6">
-                  {/* Data Sources */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Data Sources
-                    </label>
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      <div className="grid grid-cols-2 gap-6">
+                        {/* Data Sources */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Data Sources
+                          </label>
+                          <div className="space-y-1 max-h-40 overflow-y-auto">
                       {RESEARCH_SOURCES.map(source => (
                         <label key={source.id} className="flex items-start">
                           <input
                             type="checkbox"
                             checked={(filters.sources || []).includes(source.id)}
-                            onChange={(e) => {
-                              const currentSources = filters.sources || [];
-                              const newSources = e.target.checked
-                                ? [...currentSources, source.id]
-                                : currentSources.filter(s => s !== source.id);
-                              handleFilterChange('sources', newSources);
-                            }}
+                            onChange={(e) => handleSourceChange(source.id, e.target.checked)}
                             className="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
                           <div className="ml-2">
@@ -135,26 +203,26 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
                     </div>
                   </div>
 
-                  {/* Year Range */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Publication Year
-                    </label>
-                    <div className="space-y-2">
-                      <input
-                        type="number"
-                        placeholder="From year"
-                        value={filters.yearFrom || ''}
-                        onChange={(e) => handleFilterChange('yearFrom', e.target.value ? parseInt(e.target.value) : undefined)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                      />
-                      <input
-                        type="number"
-                        placeholder="To year"
-                        value={filters.yearTo || ''}
-                        onChange={(e) => handleFilterChange('yearTo', e.target.value ? parseInt(e.target.value) : undefined)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                      />
+                        {/* Year Range */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Publication Year
+                          </label>
+                          <div className="space-y-1">
+                            <input
+                              type="number"
+                              placeholder="From year"
+                              value={filters.yearFrom || ''}
+                              onChange={(e) => handleYearFromChange(e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            />
+                            <input
+                              type="number"
+                              placeholder="To year"
+                              value={filters.yearTo || ''}
+                              onChange={(e) => handleYearToChange(e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            />
                     </div>
                   </div>
 
@@ -163,33 +231,27 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Minimum Citations
                     </label>
-                    <input
-                      type="number"
-                      placeholder="e.g., 100"
-                      value={filters.minCitations || ''}
-                      onChange={(e) => handleFilterChange('minCitations', e.target.value ? parseInt(e.target.value) : undefined)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                    />
+                            <input
+                              type="number"
+                              placeholder="e.g., 100"
+                              value={filters.minCitations || ''}
+                              onChange={(e) => handleMinCitationsChange(e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                            />
                   </div>
 
-                  {/* Research Fields */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Research Fields
-                    </label>
-                    <div className="space-y-2 max-h-32 overflow-y-auto">
+                        {/* Research Fields */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Research Fields
+                          </label>
+                          <div className="space-y-1 max-h-40 overflow-y-auto">
                       {RESEARCH_FIELDS.map(field => (
                         <label key={field} className="flex items-center">
                           <input
                             type="checkbox"
                             checked={(filters.fields || []).includes(field)}
-                            onChange={(e) => {
-                              const currentFields = filters.fields || [];
-                              const newFields = e.target.checked
-                                ? [...currentFields, field]
-                                : currentFields.filter(f => f !== field);
-                              handleFilterChange('fields', newFields);
-                            }}
+                            onChange={(e) => handleFieldChange(field, e.target.checked)}
                             className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           />
                           <span className="ml-2 text-sm text-gray-700">{field}</span>
@@ -220,12 +282,24 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
             <button
               onClick={handleSearch}
               disabled={loading || !query.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-2xl transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-105 hover:scale-105"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-full transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-110 hover:scale-110"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
               ) : (
-                <Search className="h-6 w-6" />
+                <svg 
+                  className="h-6 w-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  strokeWidth={2.5}
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    d="M13 7l5 5m0 0l-5 5m5-5H6" 
+                  />
+                </svg>
               )}
             </button>
 
@@ -234,7 +308,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute right-18 top-1/2 transform -translate-y-1/2 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
+                className="absolute right-16 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
@@ -276,4 +350,6 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
       </div>
     </div>
   );
-};
+});
+
+export { SearchBar };

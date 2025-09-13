@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { PaperCard } from './components/PaperCard';
 import { BookmarkList } from './components/BookmarkList';
 import { useSearch } from './hooks/useSearch';
 import { useBookmarks } from './hooks/useBookmarks';
-import { Loader2, Search, BookOpen, Sparkles } from 'lucide-react';
+import { Search, BookOpen, Sparkles } from 'lucide-react';
 
 function App() {
   const { searchResult, loading, error, search } = useSearch();
@@ -13,21 +13,34 @@ function App() {
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleSearch = (query: string, filters: any) => {
+  const handleSearch = useCallback((query: string, filters: any) => {
     setHasSearched(true);
     search(query, filters);
-  };
+  }, [search]);
+
+  const handleShowBookmarks = useCallback(() => {
+    setShowBookmarks(true);
+  }, []);
+
+  const handleCloseBookmarks = useCallback(() => {
+    setShowBookmarks(false);
+  }, []);
+
+  // Memoize the feature sources array to prevent unnecessary re-renders
+  const featureSources = useMemo(() => 
+    ['Semantic Scholar', 'arXiv', 'CrossRef', 'PubMed', 'OpenAlex'], []
+  );
 
   return (
     <div className="min-h-screen bg-white">
       <Header 
         bookmarkCount={bookmarks.length}
-        onShowBookmarks={() => setShowBookmarks(true)}
+        onShowBookmarks={handleShowBookmarks}
       />
 
       {/* Animated Landing Page - Only shows before first search */}
       {!hasSearched && !loading && (
-        <div className="relative min-h-[calc(100vh-80px)] flex items-center justify-center overflow-hidden">
+        <div className="relative min-h-[calc(100vh-80px)] flex items-start justify-center overflow-hidden pt-20">
           {/* Animated Gradient Background - Full Window */}
           <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-indigo-400/20 to-purple-400/20 animate-pulse"></div>
@@ -41,7 +54,7 @@ function App() {
           {/* Landing Content */}
           <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
             {/* Main Heading with Inline Search Icon */}
-            <div className="flex items-center justify-center mb-8">
+            <div className="flex items-center justify-center mb-6">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
                 <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-2xl mr-4">
@@ -57,19 +70,24 @@ function App() {
             </div>
 
             {/* Highlight Subtitle */}
-            <p className="text-3xl md:text-4xl text-gray-600 mb-8 font-light leading-relaxed">
+            <p className="text-3xl md:text-4xl text-gray-600 mb-6 font-light leading-relaxed">
               Your Personal Research Assistant
             </p>
 
             {/* Description */}
-            <p className="text-lg text-gray-500 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-gray-500 mb-8 max-w-2xl mx-auto leading-relaxed">
               Discover academic papers across multiple databases with intelligent search, 
               smart filtering, and comprehensive results in one place.
             </p>
 
+            {/* Search Bar - Positioned in center */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <SearchBar onSearch={handleSearch} loading={loading} />
+            </div>
+
             {/* Feature Pills */}
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {['Semantic Scholar', 'arXiv', 'CrossRef', 'PubMed', 'OpenAlex'].map((source, index) => (
+            <div className="flex flex-wrap justify-center gap-3">
+              {featureSources.map((source, index) => (
                 <div
                   key={source}
                   className="px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 rounded-full text-sm font-medium shadow-lg border border-white/20"
@@ -78,11 +96,6 @@ function App() {
                   {source}
                 </div>
               ))}
-            </div>
-
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto">
-              <SearchBar onSearch={handleSearch} loading={loading} />
             </div>
 
             {/* Floating Elements */}
@@ -176,7 +189,7 @@ function App() {
         <BookmarkList
           bookmarks={bookmarks}
           onToggleBookmark={toggleBookmark}
-          onClose={() => setShowBookmarks(false)}
+          onClose={handleCloseBookmarks}
         />
       )}
     </div>
