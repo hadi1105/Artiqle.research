@@ -69,21 +69,21 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-start">
         {/* Filters Panel */}
-        <div className={`transition-all duration-300 ${showFilters ? 'w-80' : 'w-12'}`}>
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm h-fit">
+        <div className={`transition-all duration-300 ${showFilters ? 'w-80' : 'w-16'} flex-shrink-0`}>
+          <div className="bg-white border-2 border-gray-200 rounded-2xl shadow-sm h-fit">
             {/* Filter Toggle Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`w-full p-3 flex items-center justify-center transition-colors ${
+              className={`w-full h-16 flex items-center justify-center transition-colors ${
                 hasActiveFilters ? 'text-blue-600 bg-blue-50' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
-              } rounded-xl`}
+              } rounded-2xl`}
             >
               {showFilters ? (
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-6 w-6" />
               ) : (
-                <Filter className="h-5 w-5" />
+                <Filter className="h-6 w-6" />
               )}
             </button>
 
@@ -210,7 +210,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearch, loading }) => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Search for research papers..."
-              className="block w-full pl-6 pr-16 py-4 border-2 border-gray-200 rounded-2xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md hover:border-gray-300 bg-white"
+              className="block w-full h-16 pl-6 pr-16 border-2 border-gray-200 rounded-2xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-all duration-200 shadow-sm hover:shadow-md hover:border-gray-300 bg-white"
               disabled={loading}
             />
             
