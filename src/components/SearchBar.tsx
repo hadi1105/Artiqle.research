@@ -5,9 +5,12 @@ import { SearchFilters } from '../types/paper';
 interface SearchBarProps {
   onSearch: (query: string, filters: SearchFilters) => void;
   loading: boolean;
+  currentQuery?: string;
+  currentFilters?: SearchFilters;
 }
 
 const RESEARCH_FIELDS = [
+  // Computer Science & AI
   'Machine Learning',
   'Natural Language Processing',
   'Computer Vision',
@@ -18,25 +21,122 @@ const RESEARCH_FIELDS = [
   'Software Engineering',
   'Bioinformatics',
   'Computational Biology',
+  
+  // Medicine & Health
+  'Medicine',
+  'Clinical Medicine',
+  'Public Health',
+  'Epidemiology',
+  'Pharmacology',
+  'Neuroscience',
+  'Cardiology',
+  'Oncology',
+  'Immunology',
+  'Genetics',
+  'Molecular Biology',
+  'Biochemistry',
+  'Pathology',
+  'Surgery',
+  'Pediatrics',
+  'Psychiatry',
+  'Dermatology',
+  'Radiology',
+  'Emergency Medicine',
+  'Internal Medicine',
+  
+  // Physical Sciences
   'Physics',
   'Chemistry',
   'Mathematics',
-  'Statistics'
+  'Statistics',
+  'Astronomy',
+  'Geology',
+  'Environmental Science',
+  'Materials Science',
+  'Engineering',
+  
+  // Social Sciences
+  'Psychology',
+  'Sociology',
+  'Economics',
+  'Political Science',
+  'Anthropology',
+  'Education',
+  'Linguistics',
+  'Philosophy',
+  
+  // Life Sciences
+  'Biology',
+  'Ecology',
+  'Botany',
+  'Zoology',
+  'Microbiology',
+  'Biotechnology',
+  'Agriculture',
+  'Veterinary Science',
+  
+  // Other Fields
+  'Business',
+  'Management',
+  'Finance',
+  'Marketing',
+  'Law',
+  'History',
+  'Literature',
+  'Art',
+  'Architecture',
+  'Design'
 ] as const;
 
 const RESEARCH_SOURCES = [
+  // Core Academic Databases
   { id: 'semantic-scholar', name: 'Semantic Scholar', description: 'AI-powered academic search' },
   { id: 'arxiv', name: 'arXiv', description: 'Preprints in physics, math, CS' },
   { id: 'crossref', name: 'CrossRef', description: 'DOI database' },
   { id: 'pubmed', name: 'PubMed', description: 'Biomedical literature' },
   { id: 'openalex', name: 'OpenAlex', description: 'Open academic database' },
-  { id: 'core', name: 'CORE', description: 'Open access papers' }
+  { id: 'core', name: 'CORE', description: 'Open access papers' },
+  
+  // Medical & Health Journals
+  { id: 'medline', name: 'MEDLINE', description: 'Medical literature database' },
+  { id: 'cochrane', name: 'Cochrane Library', description: 'Systematic reviews' },
+  { id: 'embase', name: 'Embase', description: 'Biomedical & pharmaceutical' },
+  { id: 'psycinfo', name: 'PsycINFO', description: 'Psychology & behavioral sciences' },
+  { id: 'cinahl', name: 'CINAHL', description: 'Nursing & allied health' },
+  
+  // Science & Engineering
+  { id: 'ieee', name: 'IEEE Xplore', description: 'Engineering & technology' },
+  { id: 'acm', name: 'ACM Digital Library', description: 'Computer science' },
+  { id: 'springer', name: 'SpringerLink', description: 'Science & technology journals' },
+  { id: 'wiley', name: 'Wiley Online Library', description: 'Multidisciplinary journals' },
+  { id: 'elsevier', name: 'ScienceDirect', description: 'Scientific & medical journals' },
+  
+  // Social Sciences & Humanities
+  { id: 'jstor', name: 'JSTOR', description: 'Arts, humanities & social sciences' },
+  { id: 'sage', name: 'SAGE Journals', description: 'Social sciences & humanities' },
+  { id: 'taylor', name: 'Taylor & Francis', description: 'Multidisciplinary research' },
+  { id: 'oxford', name: 'Oxford Academic', description: 'Scholarly journals' },
+  { id: 'cambridge', name: 'Cambridge Core', description: 'Academic journals' },
+  
+  // Open Access & Specialized
+  { id: 'doaj', name: 'DOAJ', description: 'Directory of Open Access Journals' },
+  { id: 'biorxiv', name: 'bioRxiv', description: 'Biology preprints' },
+  { id: 'medrxiv', name: 'medRxiv', description: 'Medical preprints' },
+  { id: 'chemrxiv', name: 'chemRxiv', description: 'Chemistry preprints' },
+  { id: 'ssrn', name: 'SSRN', description: 'Social sciences research' },
+  
+  // Government & Policy
+  { id: 'govinfo', name: 'GOV.INFO', description: 'Government publications' },
+  { id: 'eric', name: 'ERIC', description: 'Education research' },
+  { id: 'agris', name: 'AGRIS', description: 'Agricultural research' },
+  { id: 'repec', name: 'RePEc', description: 'Economics research' },
+  { id: 'dblp', name: 'DBLP', description: 'Computer science bibliography' }
 ] as const;
 
-const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
-  const [query, setQuery] = useState('');
+const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading, currentQuery = '', currentFilters = {} }) => {
+  const [query, setQuery] = useState(currentQuery);
   const [showFilters, setShowFilters] = useState(false);
-  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filters, setFilters] = useState<SearchFilters>(currentFilters);
   const searchTimeoutRef = useRef<number | null>(null);
 
   const handleSearch = useCallback(() => {
@@ -132,6 +232,12 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
       (Array.isArray(value) ? value.length > 0 : true)
     ), [filters]);
 
+  // Update query and filters when props change (for navigation)
+  useEffect(() => {
+    setQuery(currentQuery);
+    setFilters(currentFilters);
+  }, [currentQuery, currentFilters]);
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -145,15 +251,15 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
     <div className="w-full max-w-6xl mx-auto">
       <div className="flex gap-6 items-start">
         {/* Filters Panel */}
-        <div className={`transition-all duration-300 ease-out ${showFilters ? 'w-[800px]' : 'w-16'} flex-shrink-0`}>
+        <div className={`${showFilters ? 'w-[800px]' : 'w-16'} flex-shrink-0`}>
           <div className="bg-white/95 backdrop-blur-md border border-gray-200/50 rounded-3xl shadow-xl h-fit max-h-96 overflow-y-auto">
             {/* Filter Toggle Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`w-full h-16 flex items-center justify-center transition-all duration-300 ${
+              className={`w-full h-16 flex items-center justify-center ${
                 hasActiveFilters 
-                  ? 'text-blue-600 bg-blue-50/80 border-blue-200' 
-                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50/80 border-transparent'
+                  ? 'text-blue-600 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 border-blue-200' 
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-indigo-50/50 border-transparent'
               } rounded-3xl border-2`}
             >
               {showFilters ? (
@@ -171,7 +277,7 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
                         {hasActiveFilters && (
                           <button
                             onClick={clearFilters}
-                            className="flex items-center px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                            className="flex items-center px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg"
                           >
                             <X className="h-4 w-4 mr-1" />
                             Clear
@@ -274,7 +380,7 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
               onChange={(e) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Search for research papers..."
-              className="block w-full h-16 pl-8 pr-20 border-2 border-gray-200/50 rounded-3xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:border-gray-300 bg-white/80 backdrop-blur-sm"
+              className="block w-full h-16 pl-8 pr-20 border-2 border-gray-200 rounded-3xl text-lg placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 bg-gradient-to-r from-white to-blue-50/10"
               disabled={loading}
             />
             
@@ -282,7 +388,7 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
             <button
               onClick={handleSearch}
               disabled={loading || !query.trim()}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed text-white rounded-full transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl group-focus-within:scale-110 hover:scale-110"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-full flex items-center justify-center shadow-lg"
             >
               {loading ? (
                 <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent"></div>
@@ -308,7 +414,7 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute right-16 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-all duration-200 hover:scale-110"
+                className="absolute right-16 top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
@@ -316,36 +422,6 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading }) => {
             )}
           </div>
 
-          {/* Active Filters Display */}
-          {hasActiveFilters && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {filters.yearFrom && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  From: {filters.yearFrom}
-                </span>
-              )}
-              {filters.yearTo && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  To: {filters.yearTo}
-                </span>
-              )}
-              {filters.minCitations && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                  Min citations: {filters.minCitations}
-                </span>
-              )}
-              {filters.sources && filters.sources.length > 0 && (
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                  {filters.sources.length} source{filters.sources.length > 1 ? 's' : ''}
-                </span>
-              )}
-              {filters.fields && filters.fields.length > 0 && (
-                <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">
-                  {filters.fields.length} field{filters.fields.length > 1 ? 's' : ''}
-                </span>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>

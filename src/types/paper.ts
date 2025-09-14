@@ -9,7 +9,11 @@ export interface Paper {
   url?: string;
   pdfUrl?: string;
   fields?: string[];
-  source: 'semantic-scholar' | 'arxiv' | 'crossref' | 'pubmed' | 'openalex' | 'core';
+  source: 'semantic-scholar' | 'arxiv' | 'crossref' | 'pubmed' | 'openalex' | 'core' | 
+          'medline' | 'cochrane' | 'embase' | 'psycinfo' | 'cinahl' | 'ieee' | 'acm' | 
+          'springer' | 'wiley' | 'elsevier' | 'jstor' | 'sage' | 'taylor' | 'oxford' | 
+          'cambridge' | 'doaj' | 'biorxiv' | 'medrxiv' | 'chemrxiv' | 'ssrn' | 'govinfo' | 
+          'eric' | 'agris' | 'repec' | 'dblp';
   doi?: string;
   pmid?: string;
   arxivId?: string;

@@ -21,11 +21,11 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
   }, [onToggleBookmark, paper]);
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg border border-gray-200/50 p-8 hover:shadow-2xl transition-all duration-500 hover:border-blue-200/50 group hover:scale-[1.02]">
+    <div className="bg-gradient-to-br from-white to-blue-50/20 rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md group">
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div className="flex-1">
-          <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors leading-tight">
+          <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
             {paper.title}
           </h3>
           
@@ -56,10 +56,10 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
 
         <button
           onClick={handleToggleBookmark}
-          className={`ml-6 p-3 rounded-2xl transition-all duration-300 ${
+          className={`ml-6 p-3 rounded-xl ${
             isBookmarked
-              ? 'text-blue-600 bg-blue-50 hover:bg-blue-100 shadow-lg'
-              : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50 hover:shadow-md'
+              ? 'text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 shadow-sm'
+              : 'text-gray-400 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50'
           }`}
         >
           {isBookmarked ? (
@@ -96,7 +96,7 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
             href={paper.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-xl transition-all duration-200"
+            className="flex items-center px-4 py-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-lg"
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             View Paper
@@ -107,7 +107,7 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
             href={paper.pdfUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-all duration-200"
+            className="flex items-center px-4 py-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 rounded-lg"
           >
             <FileText className="h-4 w-4 mr-2" />
             PDF
@@ -118,7 +118,7 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
             href={`https://doi.org/${paper.doi}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-xl transition-all duration-200"
+            className="flex items-center px-4 py-2 text-sm font-semibold text-purple-600 hover:text-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 rounded-lg"
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             DOI

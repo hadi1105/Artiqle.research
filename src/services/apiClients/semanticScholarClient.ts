@@ -5,8 +5,11 @@ const BASE_URL = 'https://api.semanticscholar.org/graph/v1';
 export class SemanticScholarClient {
   static async searchPapers(query: string, limit = 20, offset = 0): Promise<APIResponse> {
     try {
+      // Clean and optimize query
+      const cleanQuery = query.trim().replace(/[^\w\s-]/g, ' ').replace(/\s+/g, ' ');
+      
       const params = new URLSearchParams({
-        query: query.trim(),
+        query: cleanQuery,
         limit: Math.min(limit, 100).toString(), // API has max limit of 100
         offset: offset.toString(),
         fields: 'paperId,title,authors,abstract,year,venue,citationCount,url,openAccessPdf,fieldsOfStudy,externalIds'
@@ -23,6 +26,12 @@ export class SemanticScholarClient {
         console.error(`Semantic Scholar API error: ${response.status} ${response.statusText}`);
         const errorText = await response.text();
         console.error('Error details:', errorText);
+        
+        // Try with a simpler query if the original failed
+        if (query !== cleanQuery) {
+          console.log('Retrying with simplified query...');
+          return this.searchPapers(cleanQuery, limit, offset);
+        }
         
         // Return empty results instead of throwing to allow other APIs to work
         return { papers: [], total: 0, hasMore: false };

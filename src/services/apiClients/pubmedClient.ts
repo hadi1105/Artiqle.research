@@ -5,10 +5,13 @@ const BASE_URL = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils';
 export class PubmedClient {
   static async searchPapers(query: string, limit = 20, offset = 0): Promise<APIResponse> {
     try {
+      // Enhance query for better PubMed results
+      const enhancedQuery = this.enhanceQueryForPubMed(query);
+      
       // First, search for PMIDs
       const searchParams = new URLSearchParams({
         db: 'pubmed',
-        term: query,
+        term: enhancedQuery,
         retmax: limit.toString(),
         retstart: offset.toString(),
         retmode: 'json'
@@ -77,5 +80,32 @@ export class PubmedClient {
       console.error('PubMed API error:', error);
       return { papers: [], total: 0, hasMore: false };
     }
+  }
+
+  private static enhanceQueryForPubMed(query: string): string {
+    // Add MeSH terms and synonyms for better PubMed results
+    const medicalTerms: { [key: string]: string[] } = {
+      'cancer': ['neoplasms', 'tumors', 'carcinoma'],
+      'heart disease': ['cardiovascular diseases', 'heart failure', 'myocardial infarction'],
+      'diabetes': ['diabetes mellitus', 'diabetic', 'glucose'],
+      'depression': ['depressive disorder', 'mental health', 'mood disorders'],
+      'covid': ['COVID-19', 'SARS-CoV-2', 'coronavirus'],
+      'alzheimer': ['Alzheimer disease', 'dementia', 'cognitive impairment'],
+      'hypertension': ['high blood pressure', 'blood pressure'],
+      'obesity': ['overweight', 'body mass index', 'BMI'],
+      'stroke': ['cerebrovascular accident', 'brain attack'],
+      'asthma': ['respiratory diseases', 'bronchial asthma']
+    };
+
+    let enhancedQuery = query;
+    const lowerQuery = query.toLowerCase();
+    
+    for (const [term, synonyms] of Object.entries(medicalTerms)) {
+      if (lowerQuery.includes(term)) {
+        enhancedQuery += ` OR ${synonyms.join(' OR ')}`;
+      }
+    }
+
+    return enhancedQuery;
   }
 }
