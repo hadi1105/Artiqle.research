@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({ bookmarkCount, onShowBookmarks, 
             <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 p-2.5 rounded-xl shadow-lg">
               <Microscope className="h-6 w-6 text-white" />
             </div>
-            <div className="ml-1">
+            <div className="ml-3 text-left">
               <h1 className="text-xl font-semibold text-slate-900">
                 Artiqle
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 font-bold">AI</span>

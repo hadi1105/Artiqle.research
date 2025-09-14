@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useMemo, memo, useRef, useEffect } from 'react';
 import { Filter, X, ChevronLeft } from 'lucide-react';
 import { SearchFilters } from '../types/paper';
+import { ArtiqleBot } from './ArtiqleBot';
 
 interface SearchBarProps {
   onSearch: (query: string, filters: SearchFilters) => void;
   loading: boolean;
   currentQuery?: string;
   currentFilters?: SearchFilters;
+  geminiApiKey?: string;
+  onApiKeyChange?: (apiKey: string) => void;
 }
 
 const RESEARCH_FIELDS = [
@@ -133,7 +136,7 @@ const RESEARCH_SOURCES = [
   { id: 'dblp', name: 'DBLP', description: 'Computer science bibliography' }
 ] as const;
 
-const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading, currentQuery = '', currentFilters = {} }) => {
+const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading, currentQuery = '', currentFilters = {}, geminiApiKey, onApiKeyChange }) => {
   const [query, setQuery] = useState(currentQuery);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>(currentFilters);
@@ -422,6 +425,17 @@ const SearchBar: React.FC<SearchBarProps> = memo(({ onSearch, loading, currentQu
             )}
           </div>
 
+          {/* Artiqle Bot */}
+          <div className="mt-4 flex justify-center">
+            <ArtiqleBot 
+              onSuggestionClick={(suggestion) => {
+                setQuery(suggestion);
+                onSearch(suggestion, filters);
+              }}
+              geminiApiKey={geminiApiKey}
+              onApiKeyChange={onApiKeyChange}
+            />
+          </div>
         </div>
       </div>
     </div>

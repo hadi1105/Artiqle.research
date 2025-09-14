@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Header } from './components/Header';
 import { SearchBar } from './components/SearchBar';
 import { PaperCard } from './components/PaperCard';
@@ -18,6 +18,9 @@ function App() {
     currentFilters,
     clearSearch
   } = useSearchHistory();
+  
+  // Gemini API key state (can be set by user)
+  const [geminiApiKey, setGeminiApiKey] = useState<string>('');
   const { bookmarks, toggleBookmark, isBookmarked } = useBookmarks();
   const [showBookmarks, setShowBookmarks] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -43,11 +46,6 @@ function App() {
   const handleCloseBookmarks = useCallback(() => {
     setShowBookmarks(false);
   }, []);
-
-  // Memoize the feature sources array to prevent unnecessary re-renders
-  const featureSources = useMemo(() => 
-    ['Semantic Scholar', 'arXiv', 'CrossRef', 'PubMed', 'OpenAlex', 'bioRxiv', 'medRxiv', 'IEEE', 'JSTOR'], []
-  );
 
   // Update hasSearched based on current query
   useEffect(() => {
@@ -98,19 +96,7 @@ function App() {
 
             {/* Search Bar - Positioned in center */}
             <div className="max-w-2xl mx-auto mb-8">
-              <SearchBar onSearch={handleSearch} loading={loading} currentQuery={currentQuery || ''} currentFilters={currentFilters || {}} />
-            </div>
-
-            {/* Feature Pills */}
-            <div className="flex flex-wrap justify-center gap-3">
-              {featureSources.map((source) => (
-                <div
-                  key={source}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 text-slate-700 rounded-full text-sm font-medium shadow-sm border border-blue-200"
-                >
-                  {source}
-                </div>
-              ))}
+              <SearchBar onSearch={handleSearch} loading={loading} currentQuery={currentQuery || ''} currentFilters={currentFilters || {}} geminiApiKey={geminiApiKey} onApiKeyChange={setGeminiApiKey} />
             </div>
 
           </div>
@@ -122,7 +108,7 @@ function App() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Search Bar */}
           <div className="mb-12">
-            <SearchBar onSearch={handleSearch} loading={loading} currentQuery={currentQuery || ''} currentFilters={currentFilters || {}} />
+            <SearchBar onSearch={handleSearch} loading={loading} currentQuery={currentQuery || ''} currentFilters={currentFilters || {}} geminiApiKey={geminiApiKey} onApiKeyChange={setGeminiApiKey} />
           </div>
 
           {/* Results Section */}
@@ -200,6 +186,7 @@ function App() {
           onClose={handleCloseBookmarks}
         />
       )}
+
     </div>
   );
 }
