@@ -1,9 +1,9 @@
-import { Paper, APIResponse } from '../../types/paper';
+import { APIResponse } from '../../types/paper';
 
 // Note: Google Scholar doesn't have a public API, so this is a placeholder
 // In a real implementation, you would use web scraping or a service like SerpAPI
 export class GoogleScholarClient {
-  static async searchPapers(query: string, limit = 20, offset = 0): Promise<APIResponse> {
+  static async searchPapers(query: string, _limit = 20, _offset = 0): Promise<APIResponse> {
     try {
       // This is a mock implementation
       // In reality, you would need to use a service like SerpAPI or web scraping

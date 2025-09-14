@@ -1,4 +1,4 @@
-import { Paper, SearchFilters, SearchResult } from '../types/paper';
+import { APIResponse, Paper, SearchFilters, SearchResult } from '../types/paper';
 import { SemanticScholarClient } from './apiClients/semanticScholarClient';
 import { ArxivClient } from './apiClients/arxivClient';
 import { CrossrefClient } from './apiClients/crossrefClient';
@@ -13,7 +13,7 @@ export class SearchService {
     }
 
     const limit = 15; // Increased limit per API to get more diverse results
-    const promises = [];
+    const promises: Promise<APIResponse>[] = [];
 
     // Determine which sources to search
     const sources = filters.sources || [
@@ -214,7 +214,7 @@ export class SearchService {
     }
 
     // Source reliability bonus
-    const sourceBonus = {
+    const sourceBonus: Record<string, number> = {
       'semantic-scholar': 2,
       'openalex': 2,
       'crossref': 1.5,
