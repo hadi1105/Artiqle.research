@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Search, Sparkles, Settings } from 'lucide-react';
+import { Search, Sparkles, Settings, Microscope } from 'lucide-react';
 import { SearchFilters } from '../types/paper';
 import { FilterPanel } from './FilterPanel';
 
