@@ -2,27 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Clean, minimal styling */
-* {
-  box-sizing: border-box;
-}
+/* Minimal animations for essential interactions only */
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: #ffffff;
-}
-
-/* Custom scrollbar */
+/* Custom scrollbar for modern look */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: #f1f5f9;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -34,12 +22,12 @@ body {
   background: #94a3b8;
 }
 
-/* Smooth transitions */
+/* Minimal transitions for essential interactions only */
 button, input, a {
-  transition: all 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
-/* Focus states */
+/* Focus states for accessibility */
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
@@ -47,10 +35,9 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
-/* Line clamp utility */
-.line-clamp-3 {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
