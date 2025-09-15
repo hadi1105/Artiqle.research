@@ -21,111 +21,107 @@ export const PaperCard: React.FC<PaperCardProps> = memo(({ paper, isBookmarked, 
   }, [onToggleBookmark, paper]);
 
   return (
-    <div className="bg-gradient-to-br from-white to-blue-50/20 rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md group">
+    <div className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition-shadow">
       {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="flex-1">
-          <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex-1 pr-4">
+          <h3 className="text-xl font-semibold text-gray-900 mb-3 leading-tight">
             {paper.title}
           </h3>
           
-          <div className="flex items-center text-base text-gray-600 mb-3">
-            <Users className="h-5 w-5 mr-2" />
-            <span className="truncate font-medium">
+          <div className="flex items-center text-sm text-gray-600 mb-2">
+            <Users className="h-4 w-4 mr-2" />
+            <span className="truncate">
               {paper.authors.slice(0, 3).join(', ')}
               {paper.authors.length > 3 && ` +${paper.authors.length - 3} more`}
             </span>
           </div>
 
-          <div className="flex items-center space-x-6 text-sm text-gray-500">
+          <div className="flex items-center space-x-4 text-sm text-gray-500">
             <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-2" />
-              <span className="font-semibold">{paper.year}</span>
+              <Calendar className="h-4 w-4 mr-1" />
+              <span>{paper.year}</span>
             </div>
             {paper.venue && (
-              <span className="px-3 py-1.5 bg-gray-100 rounded-full text-xs font-semibold">
+              <span className="px-2 py-1 bg-gray-100 rounded text-xs font-medium">
                 {paper.venue}
               </span>
             )}
             <div className="flex items-center">
-              <Quote className="h-4 w-4 mr-2" />
-              <span className="font-semibold">{formatCitationCount(paper.citationCount)} citations</span>
+              <Quote className="h-4 w-4 mr-1" />
+              <span>{formatCitationCount(paper.citationCount)} citations</span>
             </div>
           </div>
         </div>
 
         <button
           onClick={handleToggleBookmark}
-          className={`ml-6 p-3 rounded-xl ${
+          className={`p-2 rounded-lg transition-colors ${
             isBookmarked
-              ? 'text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 shadow-sm'
-              : 'text-gray-400 hover:text-blue-600 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50'
+              ? 'text-blue-600 bg-blue-50 hover:bg-blue-100'
+              : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50'
           }`}
         >
           {isBookmarked ? (
-            <BookmarkCheck className="h-6 w-6" />
+            <BookmarkCheck className="h-5 w-5" />
           ) : (
-            <Bookmark className="h-6 w-6" />
+            <Bookmark className="h-5 w-5" />
           )}
         </button>
       </div>
 
       {/* Abstract */}
-      <p className="text-gray-700 text-base leading-relaxed mb-6 line-clamp-3">
+      <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-3">
         {paper.abstract}
       </p>
 
       {/* Fields */}
       {paper.fields && paper.fields.length > 0 && (
-        <div className="flex flex-wrap gap-3 mb-6">
-          {paper.fields.map(field => (
+        <div className="flex flex-wrap gap-2 mb-4">
+          {paper.fields.slice(0, 4).map(field => (
             <span
               key={field}
-              className="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-semibold"
+              className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium"
             >
               {field}
             </span>
           ))}
+          {paper.fields.length > 4 && (
+            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+              +{paper.fields.length - 4} more
+            </span>
+          )}
         </div>
       )}
 
       {/* Actions */}
-      <div className="flex items-center space-x-4 pt-6 border-t border-gray-100/50">
-        {paper.url && (
-          <a
-            href={paper.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 rounded-lg"
-          >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            View Paper
-          </a>
-        )}
-        {paper.pdfUrl && (
-          <a
-            href={paper.pdfUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-50 rounded-lg"
-          >
-            <FileText className="h-4 w-4 mr-2" />
-            PDF
-          </a>
-        )}
-        {paper.doi && (
-          <a
-            href={`https://doi.org/${paper.doi}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center px-4 py-2 text-sm font-semibold text-purple-600 hover:text-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-indigo-50 rounded-lg"
-          >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            DOI
-          </a>
-        )}
-        <div className="flex-1" />
-        <span className="text-xs font-bold text-gray-500 capitalize px-3 py-1.5 bg-gray-100 rounded-full">
+      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex items-center space-x-4">
+          {paper.url && (
+            <a
+              href={paper.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-sm text-blue-600 hover:text-blue-700"
+            >
+              <ExternalLink className="h-4 w-4 mr-1" />
+              View Paper
+            </a>
+          )}
+          {paper.pdfUrl && (
+            <a
+              href={paper.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center text-sm text-green-600 hover:text-green-700"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              PDF
+            </a>
+          )}
+        </div>
+        
+        <span className="text-xs text-gray-500 font-medium capitalize">
           {paper.source.replace('-', ' ')}
         </span>
       </div>
