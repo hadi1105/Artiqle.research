@@ -81,7 +81,13 @@ export class SemanticScholarClient {
         nextOffset: offset + limit
       };
     } catch (error) {
-      console.error('Semantic Scholar API error:', error);
+      console.error('Semantic Scholar API error:', error instanceof Error ? error.message : error);
+      
+      // Provide more specific error information
+      if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
+        console.error('Network error: Unable to reach Semantic Scholar API. This may be due to CORS policy, network connectivity, or browser restrictions.');
+      }
+      
       // Return empty results instead of throwing to allow other APIs to work
       return { papers: [], total: 0, hasMore: false };
     }
